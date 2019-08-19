@@ -1,0 +1,4 @@
+﻿glob3
+numpy==1.17.0
+opencv-python==4.1.0.25
+Pillow==6.1.0

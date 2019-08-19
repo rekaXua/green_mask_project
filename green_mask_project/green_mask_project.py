@@ -12,12 +12,12 @@ files = glob.glob(rootdir + '/**/*.png', recursive=True)
 err_files=[]
 
 #Options
-GBlur=3
-CannyTr1=1
-CannyTr2=35
-LowRange=5
-HighRange=20
-DetectionTr=0.3
+GBlur = 3
+CannyTr1 = 1
+CannyTr2 = 35
+LowRange = 5
+HighRange = 20
+DetectionTr = 0.3
 
 for masksize in range(LowRange, HighRange+1):
     picturesize = 2+masksize+masksize-1+2
@@ -72,8 +72,11 @@ for f in files:
 		os.makedirs(os.path.dirname(f), exist_ok=True)
 		cv2.imwrite(os.path.dirname(f) + '/temp.png', img_rgb)     #hack for non-unicode chars
 		os.replace(os.path.dirname(f) + '/temp.png', f)
-	except:
-		err_files.append(os.path.basename(f))
+	except Exception as Exception:
+		err_files.append(os.path.basename(f) + ": " + str(Exception))
 		pass
-print("Could not mask those files: ") 
-print(err_files)
+		
+if err_files:
+	print("\n" + "Could not mask those files: ") 
+	for f in err_files:
+		print(f)
