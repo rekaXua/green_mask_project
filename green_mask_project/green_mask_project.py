@@ -53,7 +53,7 @@ for f in files:
 
 #	cv2.imwrite('output_gray.png', img_gray)     #DEBUG
 
-	for i in range(LowRange,20+1):
+	for i in range(LowRange,HighRange+1):
 		pattern_filename = "patterns/pattern"+str(i)+"x"+str(i)+".png"
 		template = cv2.imread(pattern_filename, 0)
 		w, h = template.shape[::-1]
