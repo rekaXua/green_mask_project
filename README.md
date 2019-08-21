@@ -1,10 +1,10 @@
 # green_mask_project
 Applying mask on mosaic censorship with openCV
 
+[![GitHub issues](https://img.shields.io/github/issues/rekaxua/green_mask_project.svg)](https://github.com/rekaxua/green_mask_project/issues)
 [![GitHub downloads](https://img.shields.io/github/downloads/rekaxua/green_mask_project/latest/total.svg)](https://github.com/rekaxua/green_mask_project/releases/latest)
 [![GitHub downloads](https://img.shields.io/github/downloads/rekaxua/green_mask_project/total.svg)](https://github.com/rekaxua/green_mask_project/releases)
 [![GitHub release](https://img.shields.io/github/release/rekaxua/green_mask_project.svg)](https://github.com/rekaxua/green_mask_project/releases/latest)
-[![GitHub issues](https://img.shields.io/github/issues/rekaxua/green_mask_project.svg)](https://github.com/rekaxua/green_mask_project/issues)
 
 **Don't forget to install python3 and all the requirements with command "pip3 install -r green_mask_project/requirements.txt" in cmd or bash**
 <p align="center">
