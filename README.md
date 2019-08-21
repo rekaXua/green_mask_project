@@ -8,4 +8,4 @@ Applying mask on mosaic censorship with openCV
 </p>
 
 
->To integrate this with DeepCreamPy - just add "python decensor.py --is_mosaic=True" to start.bat / .sh
+>To integrate this with DeepCreamPy - just add "python3 decensor.py --is_mosaic=True" to start.bat / .sh
