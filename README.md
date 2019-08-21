@@ -2,8 +2,8 @@
 Applying mask on mosaic censorship with openCV
 
 <p align="center">
-	<img src="https://github.com/rekaxua/green_mask_project/blob/master/decensor_input/asuka.png" width="400">
   <img src="https://github.com/rekaxua/green_mask_project/blob/master/decensor_input_original/asuka.png" width="400">
+  <img src="https://github.com/rekaxua/green_mask_project/blob/master/decensor_input/asuka.png" width="400">
 </p>
 
 
