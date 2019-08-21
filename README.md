@@ -7,6 +7,6 @@ Applying mask on mosaic censorship with openCV
   <img src="https://github.com/rekaxua/green_mask_project/blob/master/decensor_input/asuka.png" width="400">
 </p>
 
-**Picture above was made with default values, for DCP it's pretty decent results, but if your usage requires more precision, you can try to make results better by playing with the settings*
+**Picture above was made with default values. DCP can easily work with them, but if your usage requires more precision, you can try to make results better by playing with the settings*
 
 >To integrate this with DeepCreamPy - just add "python3 decensor.py --is_mosaic=True" to start.bat / .sh
