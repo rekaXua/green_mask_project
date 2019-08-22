@@ -2,7 +2,6 @@
 Applying mask on mosaic censorship with openCV
 
 [![GitHub issues](https://img.shields.io/github/issues/rekaXua/green_mask_project.svg)](https://github.com/rekaXua/green_mask_project/issues)
-[![GitHub downloads](https://img.shields.io/github/downloads/rekaXua/green_mask_project/latest/total.svg)](https://github.com/rekaXua/green_mask_project/releases/latest)
 [![GitHub downloads](https://img.shields.io/github/downloads/rekaXua/green_mask_project/total.svg)](https://github.com/rekaXua/green_mask_project/releases)
 [![GitHub release](https://img.shields.io/github/release/rekaXua/green_mask_project.svg)](https://github.com/rekaXua/green_mask_project/releases/latest)
 [![Twitter Follow](https://img.shields.io/twitter/follow/Alexander_rekaX.svg?label=Alexander_rekaX&style=flat&logo=twitter)](https://twitter.com/Alexander_rekaX/)
