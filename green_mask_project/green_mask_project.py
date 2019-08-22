@@ -106,6 +106,7 @@ for f in files:
 					continue
 				Prews -= 1
 
+			os.replace('temp.png', f)
 			#Change path to save folder
 			f=f.replace("/decensor_input_original", "/decensor_input", 1)
 			#Save file
