@@ -19,8 +19,22 @@ LowRange = 5
 HighRange = 20
 DetectionTr = 0.3
 
+convert = input('Would you like to convert input images? (Be advise, it can decrese the quality of immage) [Y/n] ') or "y"
 Prews = int(input("How many previews would you like to see (every closed preview will already save detected file): [0] ") or "0")
 
+def convertion (f):
+	global convert
+	if (convert == "y") or (change_set == "Y"):
+		#Dirty hack for non-typical images and non-unicode names (I blame CV2 for this)
+		img_C = Image.open(f).convert("RGBA")
+		x, y = img_C.size
+		card = Image.new("RGBA", (x, y), (255, 255, 255, 0))
+		card.paste(img_C, (0, 0, x, y), img_C)
+		card.save('temp.png', format="png")
+		return ("temp.png")
+	else:
+		return (f)
+	
 def change_set (message):
 	global GBlur
 	global CannyTr1
@@ -68,14 +82,9 @@ for f in files:
 	try:
 		while True:
 			print("Working on " + f)
-			#Dirty hack for non-typical images and non-unicode names (I blame CV2 for this)
-			img_C = Image.open(f).convert("RGBA")
-			x, y = img_C.size
-			card = Image.new("RGBA", (x, y), (255, 255, 255, 3))
-			card.paste(img_C, (0, 0, x, y), img_C)
-			card.save('temp.png', format="png")
-	
-			img_rgb = cv2.imread('temp.png')
+
+			img_rgb = cv2.imread(convertion (f))
+			
 			img_gray = cv2.cvtColor(img_rgb, cv2.COLOR_BGR2GRAY)
 			img_gray = cv2.Canny(img_gray,CannyTr1,CannyTr2)
 			img_gray = 255-img_gray
@@ -105,8 +114,10 @@ for f in files:
 					patterns()
 					continue
 				Prews -= 1
+				
+			if (convert == "y") or (change_set == "Y"):
+				os.replace('temp.png', f)
 
-			os.replace('temp.png', f)
 			#Change path to save folder
 			f=f.replace("/decensor_input_original", "/decensor_input", 1)
 			#Save file
