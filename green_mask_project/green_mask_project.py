@@ -24,7 +24,7 @@ Prews = int(input("How many previews would you like to see (every closed preview
 
 def convertion (f):
 	global convert
-	if (convert == "y") or (change_set == "Y"):
+	if (convert == "y") or (convert == "Y"):
 		#Dirty hack for non-typical images and non-unicode names (I blame CV2 for this)
 		img_C = Image.open(f).convert("RGBA")
 		x, y = img_C.size
@@ -115,11 +115,11 @@ for f in files:
 					continue
 				Prews -= 1
 				
-			if (convert == "y") or (change_set == "Y"):
+			if (convert == "y") or (convert == "Y"):     #replaces originals with converted
 				os.replace('temp.png', f)
 
 			#Change path to save folder
-			f=f.replace("/decensor_input_original", "/decensor_input", 1)
+			f=f.replace("decensor_input_original", "decensor_input", 1)
 			#Save file
 			os.makedirs(os.path.dirname(f), exist_ok=True)
 			cv2.imwrite('temp_out.png', img_rgb)     #still a hack for non-unicode names
