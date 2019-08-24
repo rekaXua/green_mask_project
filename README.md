@@ -16,7 +16,7 @@ Applying mask on mosaic censorship with openCV
 
 **TODO:**
 - GUI
-- Better detection alghorithm
+- Better detection algorithm
 
 
 >To integrate this with DeepCreamPy - just extract this project in DCP folder and add "python3 decensor.py --is_mosaic=True" to start.bat / .sh
