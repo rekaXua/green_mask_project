@@ -20,7 +20,7 @@ HighRange = 20
 DetectionTr = 0.3
 
 convert = input('Would you like to convert input images? (Be advise, it can decrese the quality of immage) [Y/n] ') or "y"
-Prews = int(input("How many previews would you like to see (every closed preview will already save detected file): [0] ") or "0")
+Prews = int(input("How many previews would you like to see (Every closed preview will already save detected file): [0] ") or "0")
 
 def convertion (f):
 	global convert
@@ -128,6 +128,11 @@ for f in files:
 	except Exception as Exception:
 		err_files.append(os.path.basename(f) + ": " + str(Exception))
 		pass
+	
+#Transparency remove option
+transp_rem = input("Would you like to run transparency mask removal script? (It can be useful in some situations, but use it only if you know what you're doing. It will output into ../decensor_remasked) [y/N] ") or "n"
+if (transp_rem == "y") or (transp_rem == "Y"):	
+	import transparency_remove
 	
 #Error list	
 if err_files:
