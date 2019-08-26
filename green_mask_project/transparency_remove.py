@@ -2,7 +2,7 @@
 import os
 import glob
 
-rootdir = "../decensor_input_original"
+rootdir = "../decensor_output"
 files = glob.glob(rootdir + '/**/*.png', recursive=True)
 err_files = []
 
@@ -14,7 +14,7 @@ for f in files:
 		b, g, r = cv2.split(src)
 		rgba = [b,g,r, alpha]
 		dst = cv2.merge(rgba,4)
-		f=f.replace("decensor_input_original", "decensor_remasked", 1)
+		f=f.replace("decensor_output", "decensor_remasked", 1)
 		os.makedirs(os.path.dirname(f), exist_ok=True)
 		cv2.imwrite(f, dst)
 	except Exception as Exception:
