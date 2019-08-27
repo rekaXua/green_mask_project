@@ -11,6 +11,10 @@ rootdir = "../decensor_input_original"
 files = glob.glob(rootdir + '/**/*.png', recursive=True)
 err_files=[]
 
+		
+#Transparency remove option
+transp_rem = input("Would you like to run transparency mask removal script? (It can be useful in some situations, but use it only if you know what you're doing. It's input is ../decensor_output and it will output into ../decensor_remasked) [y/N] ") or "n"
+
 #Default options
 GBlur = 3
 CannyTr1 = 1
@@ -19,7 +23,7 @@ LowRange = 5
 HighRange = 20
 DetectionTr = 0.3
 
-convert = input('Would you like to convert input images? (Be advise, it can decrese the quality of immage) [Y/n] ') or "y"
+convert = input('Would you like to convert input images? (Be advise, in few specific cases it can decrese the quality of images in input folder, but if an error occures - it need to be "y", but only for the first time) [y/N] ') or "n"
 Prews = int(input("How many previews would you like to see (Every closed preview will already save detected file): [0] ") or "0")
 
 def convertion (f):
@@ -45,12 +49,12 @@ def change_set (message):
 	
 	change_set = input(message) or "n"
 	if (change_set == "y") or (change_set == "Y"):
-		GBlur = int(input('Enter the Gaussian Blur value: [' + str(GBlur) + '] ') or GBlur)
-		CannyTr1 = int(input('Enter the Canny Edge Detector Treshold 1 value: [' + str(CannyTr1) + '] ') or CannyTr1)
-		CannyTr2 = int(input('Enter the Canny Edge Detector Treshold 2 value: [' + str(CannyTr2) + '] ') or CannyTr2)
-		LowRange = int(input('Enter the Minimal Resolution Of Patterns: [' + str(LowRange) + '] ') or LowRange)
-		HighRange = int(input('Enter the Maximal Resolution Of Patterns: [' + str(HighRange) + '] ') or HighRange)
-		DetectionTr = float(input('Enter the Detection Treshold value: [' + str(DetectionTr) + '] ') or DetectionTr)
+		GBlur = int(input('Enter the Gaussian Blur value: (small odd number) [' + str(GBlur) + '] ') or GBlur)
+		CannyTr1 = int(input('Enter the Canny Edge Detector Treshold 1 value: (1~200+, I also like it on 100) [' + str(CannyTr1) + '] ') or CannyTr1)
+		CannyTr2 = int(input('Enter the Canny Edge Detector Treshold 2 value: (1~200+) [' + str(CannyTr2) + '] ') or CannyTr2)
+		LowRange = int(input('Enter the Minimal Resolution Of Patterns: (3-Maximal Resolution) [' + str(LowRange) + '] ') or LowRange)
+		HighRange = int(input('Enter the Maximal Resolution Of Patterns: (Minimal Resolution-20+, depends on resolution of image)[' + str(HighRange) + '] ') or HighRange)
+		DetectionTr = float(input('Enter the Detection Treshold value: (0.00-1.00) [' + str(DetectionTr) + '] ') or DetectionTr)
 		return "y"
 
 #Create patterns
@@ -84,7 +88,7 @@ for f in files:
 			print("Working on " + f)
 
 			img_rgb = cv2.imread(convertion (f))
-			
+
 			img_gray = cv2.cvtColor(img_rgb, cv2.COLOR_BGR2GRAY)
 			img_gray = cv2.Canny(img_gray,CannyTr1,CannyTr2)
 			img_gray = 255-img_gray
@@ -101,7 +105,7 @@ for f in files:
 				loc = np.where(img_detection >= DetectionTr)
 				for pt in zip(*loc[::-1]):
 #					cv2.rectangle(img_rgb, pt, (pt[0] + w, pt[1] + h), (0,255,0), 1)     #DEBUG
-					cv2.rectangle(img_rgb, pt, (pt[0] + w, pt[1] + h), (0,255,0), -1)
+					cv2.rectangle(img_rgb, pt, (pt[0] + w, pt[1] + h), (0,255,0), -1)     #You can change here the color of mask
 #				cv2.imwrite('output_progress_'+str(i)+'.png', img_rgb)     #DEBUG
 
 			#Previews
@@ -129,9 +133,9 @@ for f in files:
 		err_files.append(os.path.basename(f) + ": " + str(Exception))
 		pass
 	
-#Transparency remove option
-transp_rem = input("Would you like to run transparency mask removal script? (It can be useful in some situations, but use it only if you know what you're doing. It will output into ../decensor_remasked) [y/N] ") or "n"
+#Transparency remover itself
 if (transp_rem == "y") or (transp_rem == "Y"):	
+	input('Now run DCP and then press Enter to run Transparency Remove Script')
 	import transparency_remove
 	
 #Error list	
