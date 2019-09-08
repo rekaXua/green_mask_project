@@ -1,9 +1,9 @@
 # green_mask_project
 Applying mask on mosaic censorship using openCV. Meant to work in tandem with [DeepCreamPy](https://github.com/deeppomf/DeepCreamPy)
 
-[![GitHub issues](https://img.shields.io/github/issues/rekaXua/green_mask_project.svg)](https://github.com/rekaXua/green_mask_project/issues)
-[![GitHub downloads](https://img.shields.io/github/downloads/rekaXua/green_mask_project/total.svg)](https://github.com/rekaXua/green_mask_project/releases)
-[![GitHub release](https://img.shields.io/github/release/rekaXua/green_mask_project.svg)](https://github.com/rekaXua/green_mask_project/releases/latest)
+[![GitHub issues](https://img.shields.io/github/issues/rekaXua/green_mask_project.svg?label=Issues)](https://github.com/rekaXua/green_mask_project/issues)
+[![GitHub downloads](https://img.shields.io/github/downloads/rekaXua/green_mask_project/total.svg?label=Downloads)](https://github.com/rekaXua/green_mask_project/releases)
+[![GitHub release](https://img.shields.io/github/release/rekaXua/green_mask_project.svg?label=Version)](https://github.com/rekaXua/green_mask_project/releases/latest)
 [![Twitter Follow](https://img.shields.io/twitter/follow/Alexander_rekaX.svg?label=Alexander_rekaX&style=flat&logo=twitter)](https://twitter.com/Alexander_rekaX/)
 [![Donate with PayPal](https://img.shields.io/badge/PayPal-Donate-default.svg?logo=paypal&label=%7F)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=PDS9QQPVNUERE)
 
