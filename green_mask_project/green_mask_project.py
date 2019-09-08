@@ -7,10 +7,14 @@ import os
 import glob
 from PIL import Image
 
+#You can change those folder paths
 rootdir = "../decensor_input_original"
+outdir = "../decensor_input"
+os.makedirs(rootdir, exist_ok=True)
+os.makedirs(outdir, exist_ok=True)
+
 files = glob.glob(rootdir + '/**/*.png', recursive=True)
 err_files=[]
-
 		
 #Transparency remove option
 transp_rem = input("Would you like to run transparency mask removal script? (It can be useful in some situations, but use it only if you know what you're doing. It's input is ../decensor_output and it will output into ../decensor_remasked) [y/N] ") or "n"
@@ -35,9 +39,12 @@ def convertion (f):
 		card = Image.new("RGBA", (x, y), (255, 255, 255, 0))
 		card.paste(img_C, (0, 0, x, y), img_C)
 		card.save('temp.png', format="png")
-		return ("temp.png")
+		return (cv2.imread('temp.png'))
 	else:
-		return (f)
+		pilI = Image.open(f).convert('RGB') 
+		cvI = np.array(pilI) 
+		cvI = cvI[:, :, ::-1].copy() 
+		return (cvI)
 	
 def change_set (message):
 	global GBlur
@@ -66,7 +73,7 @@ def patterns ():
 		maskimg = 2+masksize+masksize-1+2
 		screen = (maskimg, maskimg)
 
-		img = Image.new('RGB', screen, (0xff,0xff,0xff))
+		img = Image.new('RGB', screen, (255,255,255))
 
 		pix = img.load()
 
@@ -87,7 +94,7 @@ for f in files:
 		while True:
 			print("Working on " + f)
 
-			img_rgb = cv2.imread(convertion (f))
+			img_rgb = convertion(f)
 
 			img_gray = cv2.cvtColor(img_rgb, cv2.COLOR_BGR2GRAY)
 			img_gray = cv2.Canny(img_gray,CannyTr1,CannyTr2)
@@ -123,7 +130,7 @@ for f in files:
 				os.replace('temp.png', f)
 
 			#Change path to save folder
-			f=f.replace("decensor_input_original", "decensor_input", 1)
+			f=f.replace(rootdir, outdir, 1)
 			#Save file
 			os.makedirs(os.path.dirname(f), exist_ok=True)
 			cv2.imwrite('temp_out.png', img_rgb)     #still a hack for non-unicode names
