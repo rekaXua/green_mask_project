@@ -1,5 +1,5 @@
 # green_mask_project
-Applying mask on mosaic censorship with openCV
+Applying mask on mosaic censorship using openCV. Meant to work in tandem with [DCP](https://github.com/deeppomf/DeepCreamPy)
 
 [![GitHub issues](https://img.shields.io/github/issues/rekaXua/green_mask_project.svg)](https://github.com/rekaXua/green_mask_project/issues)
 [![GitHub downloads](https://img.shields.io/github/downloads/rekaXua/green_mask_project/total.svg)](https://github.com/rekaXua/green_mask_project/releases)
