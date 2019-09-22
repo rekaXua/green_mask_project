@@ -3,9 +3,9 @@
 
 import cv2
 import numpy as np
-import os     #reapalpha
-import glob     #reapalpha
-from PIL import Image     #reapalpha
+import os
+import glob
+from PIL import Image
 import reapalpha
 
 #You can change those folder paths
@@ -31,13 +31,14 @@ DetectionTr = 0.3
 
 convert = input('Would you like to convert input images (to flatten alpha channel, or to recreate alpha mask)? (Be advise, in cases with transparency it can prevent some errors and make output images better, but numerous use on some specific images can decrease quality. My advice: use only once) [y/N] ') or "n"
 
-realpha = input("Would you like to also recreate alpha mask? (best to use on images with mosaic above the transparency. The script will will replace pixels with values 240, 240, 240 +-5 (can be changed in script) to alpha. Press 'c' to change those values) [Y/n/c] ") or "y"
-trhold = 5 #you can change that threshold value
+realpha = input("Would you like to also recreate alpha mask? (best to use on images with mosaic above the transparency. The script will will replace pixels with values 240, 240, 240 +-5 to alpha. Press 'c' to change those values) [Y/n/c] ") or "y"
+trhold = 5
 rgbvals = 255, 255, 255, 0
 if (realpha == "y") or (convert == "Y"):
 	rgbvals = 240, 240, 240, 255
 if (realpha == "c") or (convert == "C"):
 	rgbvals = eval(input('Write your BG color that will be re-masked (write with commas): [240, 240, 240, 255] ') or '240, 240, 240, 255')
+	trhold = int(input('Input your threshold value for the color detection: [5] ') or '5')
 	
 
 Prews = int(input("How many previews would you like to see (Every closed preview will already save detected file): [0] ") or "0")
