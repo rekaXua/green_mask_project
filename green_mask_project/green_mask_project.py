@@ -38,7 +38,7 @@ if (realpha == "y") or (convert == "Y"):
 	rgbvals = 240, 240, 240, 255
 if (realpha == "c") or (convert == "C"):
 	rgbvals = eval(input('Write your BG color that will be re-masked (write with commas): [240, 240, 240, 255] ') or '240, 240, 240, 255')
-	trhold = int(input('Input your threshold value for the color detection: [5] ') or '5')
+	trhold = int(input('Input your threshold value for the color detection: [10] ') or '10')
 	
 
 Prews = int(input("How many previews would you like to see (Every closed preview will already save detected file): [0] ") or "0")
@@ -154,7 +154,7 @@ for f in files:
 		err_files.append(os.path.basename(f) + ": " + str(Exception))
 		pass
 	
-#Transparency remover itself     #DEBUG_redundant
+#CV Transparency remover itself     #DEBUG_redundant
 if (transp_rem == "y") or (transp_rem == "Y"):	
 	input('Now run DCP and then press Enter to run Transparency Remove Script')
 	import transparency_remove

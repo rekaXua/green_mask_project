@@ -52,10 +52,10 @@ def reapalpha (rgbvals, trhold):
 	pass
 
 if __name__ == "__main__":
-	realpha = input("Would you like to change default color (240, 240, 240) and threshold (5)? [y/N] ") or "n"
-	trhold = 5
+	realpha = input("Would you like to change default color (240, 240, 240) and threshold (10)? [y/N] ") or "n"
+	trhold = 10
 	rgbvals = 240, 240, 240
 	if (realpha == "y") or (realpha == "Y"):
 		rgbvals = eval(input('Write your BG color that will be re-masked (write with commas): [240, 240, 240] ') or '240, 240, 240')
-		trhold = int(input('Write your threshold value: [5] ') or '5')
+		trhold = int(input('Write your threshold value: [10] ') or '10')
 	reapalpha(rgbvals, trhold)
