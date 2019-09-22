@@ -1,4 +1,8 @@
-﻿def reapalpha (rgbvals, trhold):
+﻿import os
+import glob
+from PIL import Image
+
+def reapalpha (rgbvals, trhold):
 	rlow = rgbvals[0]-trhold
 	if (rlow < 0):
 		rlow = 0
@@ -48,9 +52,6 @@
 	pass
 
 if __name__ == "__main__":
-	import os
-	import glob
-	from PIL import Image
 	realpha = input("Would you like to change default color (240, 240, 240) and threshold (5)? [y/N] ") or "n"
 	trhold = 5
 	rgbvals = 240, 240, 240
