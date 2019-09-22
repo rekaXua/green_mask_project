@@ -3,9 +3,10 @@
 
 import cv2
 import numpy as np
-import os
-import glob
-from PIL import Image
+import os     #reapalpha
+import glob     #reapalpha
+from PIL import Image     #reapalpha
+import reapalpha
 
 #You can change those folder paths
 rootdir = "../decensor_input_original"
@@ -16,8 +17,9 @@ os.makedirs(outdir, exist_ok=True)
 files = glob.glob(rootdir + '/**/*.png', recursive=True)
 err_files=[]
 		
-#Transparency remove option
-transp_rem = input("Would you like to run transparency mask removal script? (It can be useful in some situations, but use it only if you know what you're doing. It's input is ../decensor_output and it will output into ../decensor_remasked) [y/N] ") or "n"
+#Transparency remove option (redundant), if you need it - just uncomment second line
+transp_rem = "n"
+#transp_rem = input("Would you like to run transparency mask removal script (flatten the image)? (It can be useful in some situations, but use it only if you know what you're doing. It's input is ../decensor_output and it will output into ../decensor_remasked) [y/N] ") or "n"
 
 #Default options
 GBlur = 3
@@ -27,18 +29,29 @@ LowRange = 5
 HighRange = 20
 DetectionTr = 0.3
 
-convert = input('Would you like to convert input images? (Be advise, in few specific cases it can decrese the quality of images in input folder, but if an error occures - it need to be "y", but only for the first time) [y/N] ') or "n"
+convert = input('Would you like to convert input images (to flatten alpha channel, or to recreate alpha mask)? (Be advise, in cases with transparency it can prevent some errors and make output images better, but numerous use on some specific images can decrease quality. My advice: use only once) [y/N] ') or "n"
+
+realpha = input("Would you like to also recreate alpha mask? (best to use on images with mosaic above the transparency. The script will will replace pixels with values 240, 240, 240 +-5 (can be changed in script) to alpha. Press 'c' to change those values) [Y/n/c] ") or "y"
+trhold = 5 #you can change that threshold value
+rgbvals = 255, 255, 255, 0
+if (realpha == "y") or (convert == "Y"):
+	rgbvals = 240, 240, 240, 255
+if (realpha == "c") or (convert == "C"):
+	rgbvals = eval(input('Write your BG color that will be re-masked (write with commas): [240, 240, 240, 255] ') or '240, 240, 240, 255')
+	
+
 Prews = int(input("How many previews would you like to see (Every closed preview will already save detected file): [0] ") or "0")
 
 def convertion (f):
 	global convert
+	global rgbvals
+	global realpha
+	#Dirty hack for non-typical images and non-unicode names (I blame CV2 for this) and fix for DCP transparency
 	if (convert == "y") or (convert == "Y"):
-		#Dirty hack for non-typical images and non-unicode names (I blame CV2 for this)
 		img_C = Image.open(f).convert("RGBA")
 		x, y = img_C.size
-		card = Image.new("RGBA", (x, y), (255, 255, 255, 0))
-		card.paste(img_C, (0, 0, x, y), img_C)
-		card.save('temp.png', format="png")
+		card = Image.new("RGBA", (x, y), (rgbvals))
+		Image.alpha_composite(card, img_C).save('temp.png', format="png")
 		return (cv2.imread('temp.png'))
 	else:
 		pilI = Image.open(f).convert('RGB') 
@@ -140,11 +153,15 @@ for f in files:
 		err_files.append(os.path.basename(f) + ": " + str(Exception))
 		pass
 	
-#Transparency remover itself
+#Transparency remover itself     #DEBUG_redundant
 if (transp_rem == "y") or (transp_rem == "Y"):	
 	input('Now run DCP and then press Enter to run Transparency Remove Script')
 	import transparency_remove
-	
+#Recreate alpha mask
+if (realpha == "y") or (realpha == "Y") or (realpha == "c") or (convert == "C"):
+	input('Now run DCP and then press Enter to recreate alpha mask on output images')
+	reapalpha.reapalpha(rgbvals, trhold)
+
 #Error list	
 if err_files:
 	print("\n" + "Could not mask those files: ") 
