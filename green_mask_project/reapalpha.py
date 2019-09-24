@@ -37,6 +37,24 @@ def reapalpha (rgbvals, trhold):
 				for x in range(img.size[0]):
 					if pixdata[x, y][0] in range(rlow,rhigh) and pixdata[x, y][1] in range(glow,ghigh) and pixdata[x, y][2] in range(blow,bhigh):
 						pixdata[x, y] = (255, 255, 255, 0)
+			
+			for y in range(1, img.size[1]):
+				for x in range(1, img.size[0]):
+					try:
+						if pixdata[x, y][3] != 0:
+							if (pixdata[x-1, y][3] == 0) or (pixdata[x+1, y][3] == 0) or (pixdata[x, y-1][3] == 0) or (pixdata[x, y+1][3] == 0):
+								pixdata[x, y] = (pixdata[x, y][0], pixdata[x, y][1], pixdata[x, y][2], 65)
+					except:
+						pass
+
+			for y in range(1, img.size[1]):
+				for x in range(1, img.size[0]):
+					try:
+						if pixdata[x, y][3] != 0 and (pixdata[x, y][3] != 65):
+							if (pixdata[x-1, y][3] == 65) or (pixdata[x+1, y][3] == 65) or (pixdata[x, y-1][3] == 65) or (pixdata[x, y+1][3] == 65):
+								pixdata[x, y] = (pixdata[x, y][0], pixdata[x, y][1], pixdata[x, y][2], 195)
+					except:
+						pass
 
 			f=f.replace("decensor_output", "decensor_realpha", 1)
 			os.makedirs(os.path.dirname(f), exist_ok=True)
@@ -52,10 +70,10 @@ def reapalpha (rgbvals, trhold):
 	pass
 
 if __name__ == "__main__":
-	realpha = input("Would you like to change default color (240, 240, 240) and threshold (10)? [y/N] ") or "n"
-	trhold = 10
+	realpha = input("Would you like to change default color (240, 240, 240) and threshold (5)? [y/N] ") or "n"
+	trhold = 5
 	rgbvals = 240, 240, 240
 	if (realpha == "y") or (realpha == "Y"):
 		rgbvals = eval(input('Write your BG color that will be re-masked (write with commas): [240, 240, 240] ') or '240, 240, 240')
-		trhold = int(input('Write your threshold value: [10] ') or '10')
+		trhold = int(input('Write your threshold value: [5] ') or '5')
 	reapalpha(rgbvals, trhold)
