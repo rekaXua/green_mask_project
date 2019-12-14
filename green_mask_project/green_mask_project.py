@@ -13,6 +13,7 @@ rootdir = "../decensor_input_original"
 outdir = "../decensor_input"
 os.makedirs(rootdir, exist_ok=True)
 os.makedirs(outdir, exist_ok=True)
+os.makedirs("./patterns", exist_ok=True)
 		
 #Transparency remove option (redundant), if you need it - just uncomment second line
 transp_rem = "n"
