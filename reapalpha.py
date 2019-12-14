@@ -24,7 +24,7 @@ def reapalpha (rgbvals, trhold):
 	if (bhigh >255):
 		bhigh = 255
 	
-	rootdir = "../decensor_output"
+	rootdir = "./decensor_output"
 	files = glob.glob(rootdir + '/**/*.png', recursive=True)
 	err_files = []
 

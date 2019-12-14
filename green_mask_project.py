@@ -9,15 +9,16 @@ from PIL import Image
 import reapalpha
 
 #You can change those folder paths
-rootdir = "../decensor_input_original"
-outdir = "../decensor_input"
+rootdir = "./decensor_input_original"
+outdir = "./decensor_input"
+pattdir = "./patterns"
 os.makedirs(rootdir, exist_ok=True)
 os.makedirs(outdir, exist_ok=True)
-os.makedirs("./patterns", exist_ok=True)
+os.makedirs(pattdir, exist_ok=True)
 		
 #Transparency remove option (redundant), if you need it - just uncomment second line
 transp_rem = "n"
-#transp_rem = input("Would you like to run transparency mask removal script (flatten the image)? (It can be useful in some situations, but use it only if you know what you're doing. It's input is ../decensor_output and it will output into ../decensor_remasked) [y/N] ") or "n"
+#transp_rem = input("Would you like to run transparency mask removal script (flatten the image)? (It can be useful in some situations, but use it only if you know what you're doing. It's input is ./decensor_output and it will output into ./decensor_remasked) [y/N] ") or "n"
 
 #Default options
 GBlur = 3
@@ -52,8 +53,8 @@ def convertion (f):
 		img_C = Image.open(f).convert("RGBA")
 		x, y = img_C.size
 		card = Image.new("RGBA", (x, y), (rgbvals))
-		Image.alpha_composite(card, img_C).save('temp.png', format="png")
-		return (cv2.imread('temp.png'))
+		Image.alpha_composite(card, img_C).save(pattdir+'/temp.png', format="png")
+		return (cv2.imread(pattdir+'/temp.png'))
 	else:
 		pilI = Image.open(f).convert('RGB') 
 		cvI = np.array(pilI) 
@@ -97,7 +98,7 @@ def patterns ():
 					pix[i, k] = (0,0,0)
 					pix[k, j] = (0,0,0)
 
-		img.save("patterns/pattern"+str(masksize)+"x"+str(masksize)+".png")
+		img.save(pattdir+"/pattern"+str(masksize)+"x"+str(masksize)+".png")
 
 change_set("Would you like to change default settings? [y/N] ")
 patterns()
@@ -118,7 +119,7 @@ for f in files:
 
 			#Detection
 			for i in range(LowRange,HighRange+1):
-				pattern_filename = "patterns/pattern"+str(i)+"x"+str(i)+".png"
+				pattern_filename = pattdir+"/pattern"+str(i)+"x"+str(i)+".png"
 				template = cv2.imread(pattern_filename, 0)
 				w, h = template.shape[::-1]
 			
