@@ -13,9 +13,6 @@ rootdir = "../decensor_input_original"
 outdir = "../decensor_input"
 os.makedirs(rootdir, exist_ok=True)
 os.makedirs(outdir, exist_ok=True)
-
-files = glob.glob(rootdir + '/**/*.png', recursive=True)
-err_files=[]
 		
 #Transparency remove option (redundant), if you need it - just uncomment second line
 transp_rem = "n"
@@ -31,22 +28,24 @@ DetectionTr = 0.3
 
 convert = input('Would you like to convert input images (to flatten alpha channel, or to recreate alpha mask)? (Be advise, in cases with transparency it can prevent some errors and make output images better, but numerous use on some specific images can decrease quality. My advice: use only once) [y/N] ') or "n"
 
-realpha = input("Would you like to also recreate alpha mask? (best to use on images with mosaic above the transparency. The script will will replace pixels with values 240, 240, 240 +-5 to alpha. Press 'c' to change those values) [Y/n/c] ") or "y"
-trhold = 5
-rgbvals = 255, 255, 255, 0
-if (realpha == "y") or (convert == "Y"):
-	rgbvals = 240, 240, 240, 255
-if (realpha == "c") or (convert == "C"):
-	rgbvals = eval(input('Write your BG color that will be re-masked (write with commas): [240, 240, 240, 255] ') or '240, 240, 240, 255')
-	trhold = int(input('Input your threshold value for the color detection: [5] ') or '5')
-	
+files = glob.glob(rootdir + '/**/*.png', recursive=True)
+err_files=[]
+
+if (convert == "y") or (convert == "Y"):
+	realpha = input("Would you like to also recreate alpha mask? (best to use on images with mosaic above the transparency. The script will will replace pixels with values 240, 240, 240 +-5 to alpha. Press 'c' to change those values) [Y/n/c] ") or "y"
+	trhold = 5
+	rgbvals = 255, 255, 255, 0
+	if (realpha == "y") or (realpha == "Y"):
+		rgbvals = 240, 240, 240, 255
+	if (realpha == "c") or (realpha == "C"):
+		rgbvals = eval(input('Write your BG color that will be re-masked (write with commas): [240, 240, 240, 255] ') or '240, 240, 240, 255')
+		trhold = int(input('Input your threshold value for the color detection: [5] ') or '5')
 
 Prews = int(input("How many previews would you like to see (Every closed preview will already save detected file): [0] ") or "0")
 
 def convertion (f):
 	global convert
 	global rgbvals
-	global realpha
 	#Dirty hack for non-typical images and non-unicode names (I blame CV2 for this) and fix for DCP transparency
 	if (convert == "y") or (convert == "Y"):
 		img_C = Image.open(f).convert("RGBA")
@@ -159,9 +158,10 @@ if (transp_rem == "y") or (transp_rem == "Y"):
 	input('Now run DCP and then press Enter to run Transparency Remove Script')
 	import transparency_remove
 #Recreate alpha mask
-if (realpha == "y") or (realpha == "Y") or (realpha == "c") or (convert == "C"):
-	input('Now run DCP and then press Enter to recreate alpha mask on output images')
-	reapalpha.reapalpha(rgbvals, trhold)
+if (convert == "y") or (convert == "Y"):
+	if (realpha == "y") or (realpha == "Y") or (realpha == "c") or (realpha == "C"):
+		input('Now run DCP and then press Enter to recreate alpha mask on output images')
+		reapalpha.reapalpha(rgbvals, trhold)
 
 #Error list	
 if err_files:

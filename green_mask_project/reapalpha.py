@@ -38,23 +38,25 @@ def reapalpha (rgbvals, trhold):
 					if pixdata[x, y][0] in range(rlow,rhigh) and pixdata[x, y][1] in range(glow,ghigh) and pixdata[x, y][2] in range(blow,bhigh):
 						pixdata[x, y] = (255, 255, 255, 0)
 			
-			for y in range(1, img.size[1]):
-				for x in range(1, img.size[0]):
-					try:
-						if pixdata[x, y][3] != 0:
-							if (pixdata[x-1, y][3] == 0) or (pixdata[x+1, y][3] == 0) or (pixdata[x, y-1][3] == 0) or (pixdata[x, y+1][3] == 0):
-								pixdata[x, y] = (pixdata[x, y][0], pixdata[x, y][1], pixdata[x, y][2], 65)
-					except:
-						pass
+			AA = input('Would you like to apply "anti-aliasing" (it will take some time) [n]') or "n"
+			if (AA == "y") or (AA == "Y"):
+				for y in range(1, img.size[1]):
+					for x in range(1, img.size[0]):
+						try:
+							if pixdata[x, y][3] != 0:
+								if (pixdata[x-1, y][3] == 0) or (pixdata[x+1, y][3] == 0) or (pixdata[x, y-1][3] == 0) or (pixdata[x, y+1][3] == 0):
+									pixdata[x, y] = (pixdata[x, y][0], pixdata[x, y][1], pixdata[x, y][2], 65)
+						except:
+							pass
 
-			for y in range(1, img.size[1]):
-				for x in range(1, img.size[0]):
-					try:
-						if pixdata[x, y][3] != 0 and (pixdata[x, y][3] != 65):
-							if (pixdata[x-1, y][3] == 65) or (pixdata[x+1, y][3] == 65) or (pixdata[x, y-1][3] == 65) or (pixdata[x, y+1][3] == 65):
-								pixdata[x, y] = (pixdata[x, y][0], pixdata[x, y][1], pixdata[x, y][2], 195)
-					except:
-						pass
+				for y in range(1, img.size[1]):
+					for x in range(1, img.size[0]):
+						try:
+							if pixdata[x, y][3] != 0 and (pixdata[x, y][3] != 65):
+								if (pixdata[x-1, y][3] == 65) or (pixdata[x+1, y][3] == 65) or (pixdata[x, y-1][3] == 65) or (pixdata[x, y+1][3] == 65):
+									pixdata[x, y] = (pixdata[x, y][0], pixdata[x, y][1], pixdata[x, y][2], 195)
+						except:
+							pass
 
 			f=f.replace("decensor_output", "decensor_realpha", 1)
 			os.makedirs(os.path.dirname(f), exist_ok=True)
