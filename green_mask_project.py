@@ -142,7 +142,7 @@ for f in files:
 				Prews -= 1
 				
 			if (convert == "y") or (convert == "Y"):     #replaces originals with converted
-				os.replace('temp.png', f)
+				os.replace(pattdir+'/temp.png', f)
 
 			#Change path to save folder
 			f=f.replace(rootdir, outdir, 1)
