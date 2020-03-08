@@ -53,7 +53,8 @@ def convertion (f):
 		img_C = Image.open(f).convert("RGBA")
 		x, y = img_C.size
 		card = Image.new("RGBA", (x, y), (rgbvals))
-		return (np.array(Image.alpha_composite(card, img_C)))
+		Image.alpha_composite(card, img_C).save(pattdir+'/temp.png', format="png")
+		return (cv2.imread(pattdir+'/temp.png'))
 	else:
 		pilI = Image.open(f).convert('RGB') 
 		cvI = np.array(pilI) 
@@ -139,7 +140,9 @@ for f in files:
 					patterns()
 					continue
 				Prews -= 1
-				
+			
+			if (convert == "y") or (convert == "Y"):     #replaces originals with converted
+				os.replace(pattdir+'/temp.png', f)			
 
 			#Change path to save folder
 			f=f.replace(rootdir, outdir, 1)
@@ -161,7 +164,7 @@ if (convert == "y") or (convert == "Y"):
 	if (realpha == "y") or (realpha == "Y") or (realpha == "c") or (realpha == "C"):
 		AA = input('Would you like to apply "anti-aliasing" (it will take some time) [n]') or "n"
 		input('Now run DCP and then press Enter to recreate alpha mask on output images')
-		reapalpha.reapalpha(rgbvals, trhold)
+		reapalpha.reapalpha(rgbvals, trhold, AA)
 
 #Error list	
 if err_files:

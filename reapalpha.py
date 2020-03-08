@@ -72,6 +72,7 @@ def reapalpha (rgbvals, trhold, AA):
 
 if __name__ == "__main__":
 	realpha = input("Would you like to change default color (240, 240, 240) and threshold (5)? [y/N] ") or "n"
+	AA = input('Would you like to apply "anti-aliasing" (it will take some time) [n]') or "n"
 	trhold = 5
 	rgbvals = 240, 240, 240
 	if (realpha == "y") or (realpha == "Y"):
