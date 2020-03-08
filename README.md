@@ -15,7 +15,7 @@ Applying mask on mosaic censorship using openCV. Meant to work in tandem with [D
 *Specially for Neural Network training:*
 <p align="center">
   <img src="https://github.com/rekaxua/green_mask_project/blob/master/csv_import/decensor_input/asuka.png" width="400">
-  <img src="https://github.com/rekaxua/green_mask_project/blob/master/csv_import/decensor_mask/asuka.png" width="400">
+  <img src="https://github.com/rekaxua/green_mask_project/blob/master/csv_import/decensor_masks/asuka.png" width="400">
 </p>
 
 **Picture above was made with default values. DCP can easily work with them, but if your usage requires more precision, you can try to make results better by playing with the settings*
