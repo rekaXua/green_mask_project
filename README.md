@@ -7,7 +7,7 @@ Applying mask on mosaic censorship using openCV. Meant to work in tandem with [D
 [![Twitter Follow](https://img.shields.io/twitter/follow/Alexander_rekaX.svg?label=Alexander_rekaX&style=flat&logo=twitter)](https://twitter.com/Alexander_rekaX/)
 [![Donate with PayPal](https://img.shields.io/badge/PayPal-Donate-gray.svg?logo=paypal&label=)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=PDS9QQPVNUERE)
 
-**Don't forget to install python3 and all the requirements with command "pip3 install -r green_mask_project/requirements.txt" in cmd or bash**
+**Don't forget to install python3 and all the requirements with command "pip3 install -r requirements.txt" in cmd or bash**
 <p align="center">
   <img src="https://github.com/rekaxua/green_mask_project/blob/master/decensor_input_original/asuka.png" width="400">
   <img src="https://github.com/rekaxua/green_mask_project/blob/master/decensor_input/asuka.png" width="400">
