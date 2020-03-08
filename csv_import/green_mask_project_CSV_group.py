@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import cv2
+import csv
 import numpy as np
 import os
 import glob
@@ -34,7 +35,7 @@ files = glob.glob(rootdir + '/**/*.png', recursive=True)
 err_files=[]
 
 if (convert == "y") or (convert == "Y"):
-	realpha = input("Would you like to also recreate alpha mask? (best to use on images with mosaic above the transparency. The script will will replace pixels with values 240, 240, 240 +-5 to alpha. Press 'c' to change those values) [Y/n/c] ") or "y"
+	realpha = input("Would you like to also recreate alpha mask? (best to use on images with mosaic above the transparency. The script will will replace pixels with values 240, 240, 240 +-5 to alpha. Press 'c' to change those values) [y/N/c] ") or "n"
 	trhold = 5
 	rgbvals = 255, 255, 255, 0
 	if (realpha == "y") or (realpha == "Y"):
@@ -103,54 +104,66 @@ change_set("Would you like to change default settings? [y/N] ")
 patterns()
 
 #Working with files
-for f in files:
-	try:
-		while True:
-			print("Working on " + f)
+with open('example.csv', 'w', newline='', encoding='utf-8') as f_output:     #CSV
+	csv_output = csv.writer(f_output, quoting=csv.QUOTE_NONE, quotechar="", delimiter=",", escapechar='~')     #CSV
+	csv_output.writerow(['filename','file_size','file_attributes','region_count','region_id','region_shape_attributes','region_attributes'])     #CSV
+	for f in files:
+		try:
+			while True:
+				print("Working on " + f)
 
-			img_rgb = convertion(f)
+				img_rgb = convertion(f)
 
-			img_gray = cv2.cvtColor(img_rgb, cv2.COLOR_BGR2GRAY)
-			img_gray = cv2.Canny(img_gray,CannyTr1,CannyTr2)
-			img_gray = 255-img_gray
-			img_gray = cv2.GaussianBlur(img_gray,(GBlur,GBlur),0)
-#			cv2.imwrite('output_gray.png', img_gray)     #DEBUG
+				img_gray = cv2.cvtColor(img_rgb, cv2.COLOR_BGR2GRAY)
+				img_gray = cv2.Canny(img_gray,CannyTr1,CannyTr2)
+				img_gray = 255-img_gray
+				img_gray = cv2.GaussianBlur(img_gray,(GBlur,GBlur),0)
+	#			cv2.imwrite('output_gray.png', img_gray)     #DEBUG
 
-			#Detection
-			for i in range(LowRange,HighRange+1):
-				pattern_filename = pattdir+"/pattern"+str(i)+"x"+str(i)+".png"
-				template = cv2.imread(pattern_filename, 0)
-				w, h = template.shape[::-1]
-			
-				img_detection = cv2.matchTemplate(img_gray,template,cv2.TM_CCOEFF_NORMED)
-				loc = np.where(img_detection >= DetectionTr)
-				for pt in zip(*loc[::-1]):
-#					cv2.rectangle(img_rgb, pt, (pt[0] + w, pt[1] + h), (0,255,0), 1)     #DEBUG
-					cv2.rectangle(img_rgb, pt, (pt[0] + w, pt[1] + h), (0,255,0), -1)     #You can change here the color of mask
-#				cv2.imwrite('output_progress_'+str(i)+'.png', img_rgb)     #DEBUG
-
-			#Previews
-			if Prews > 0:
-				cv2.imshow('Preview! Press any key or close to save', img_rgb)
-#				cv2.imshow('preview_gray', img_gray)     #DEBUG
-				cv2.waitKey(0)
-				cv2.destroyAllWindows()
-				if (change_set("Would you like to correct your settings? [y/N] ") == "y"):
-					patterns()
-					continue
-				Prews -= 1
+				req=[]     #CVS
+				#Detection
+				for i in range(LowRange,HighRange+1):
+					pattern_filename = pattdir+"/pattern"+str(i)+"x"+str(i)+".png"
+					template = cv2.imread(pattern_filename, 0)
+					w, h = template.shape[::-1]
 				
+					img_detection = cv2.matchTemplate(img_gray,template,cv2.TM_CCOEFF_NORMED)
+					loc = np.where(img_detection >= DetectionTr)
+					for pt in zip(*loc[::-1]):
+						req.append([pt[0], pt[1], pt[0] + w, pt[1] + h])     #CVS
+	#					cv2.rectangle(img_rgb, pt, (pt[0] + w, pt[1] + h), (0,255,0), -1)     #You can change here the color of mask
+	#				cv2.imwrite('output_progress_'+str(i)+'.png', img_rgb)     #DEBUG
 
-			#Change path to save folder
-			f=f.replace(rootdir, outdir, 1)
-			#Save file
-			os.makedirs(os.path.dirname(f), exist_ok=True)
-			cv2.imwrite('temp_out.png', img_rgb)     #still a hack for non-unicode names
-			os.replace('temp_out.png', f)
-			break
-	except Exception as Exception:
-		err_files.append(os.path.basename(f) + ": " + str(Exception))
-		pass
+				#Previews
+				if Prews > 0:
+					cv2.imshow('Preview! Press any key or close to save', img_rgb)
+	#				cv2.imshow('preview_gray', img_gray)     #DEBUG
+					cv2.waitKey(0)
+					cv2.destroyAllWindows()
+					if (change_set("Would you like to correct your settings? [y/N] ") == "y"):
+						patterns()
+						continue
+					Prews -= 1
+					
+
+				#print(req)
+				result, _ = cv2.groupRectangles(np.array(req).tolist(),1,0.01)
+				for idx,(x1,y1,x2,y2) in enumerate(result):
+					cv2.rectangle(img_rgb,(x1,y1),(x2,y2),(0,255,0),-1)
+					#rectNum=list(zip(*loc[::-1]))     #CSV
+					csv_output.writerow([os.path.basename(f), os.stat(f).st_size, '"{}"', len(result), idx, '"{""name"":""rect""','""x"":' + str(x1), '""y"":' + str(y1), '""width"":' + str(x2-x1), '""height"":' + str(y2-y1) + '}"', '"{}"'])     #CSV
+					#print(result)
+
+				#Change path to save folder
+				f=f.replace(rootdir, outdir, 1)
+				#Save file
+				os.makedirs(os.path.dirname(f), exist_ok=True)
+				cv2.imwrite('temp_out.png', img_rgb)     #still a hack for non-unicode names
+				os.replace('temp_out.png', f)
+				break
+		except Exception as Exception:
+			err_files.append(os.path.basename(f) + ": " + str(Exception))
+			pass
 	
 #CV Transparency remover itself     #DEBUG_redundant
 if (transp_rem == "y") or (transp_rem == "Y"):	
@@ -161,7 +174,7 @@ if (convert == "y") or (convert == "Y"):
 	if (realpha == "y") or (realpha == "Y") or (realpha == "c") or (realpha == "C"):
 		AA = input('Would you like to apply "anti-aliasing" (it will take some time) [n]') or "n"
 		input('Now run DCP and then press Enter to recreate alpha mask on output images')
-		reapalpha.reapalpha(rgbvals, trhold)
+		reapalpha.reapalpha(rgbvals, trhold, AA)
 
 #Error list	
 if err_files:
