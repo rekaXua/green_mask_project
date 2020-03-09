@@ -7,60 +7,28 @@ import numpy as np
 import os
 import glob
 from PIL import Image
-import reapalpha
 
 #You can change those folder paths
 rootdir = "./decensor_input_original"
-outdir = "./decensor_input"
+outdir = "./decensor_masks"
 pattdir = "./patterns"
 os.makedirs(rootdir, exist_ok=True)
 os.makedirs(outdir, exist_ok=True)
 os.makedirs(pattdir, exist_ok=True)
-		
-#Transparency remove option (redundant), if you need it - just uncomment second line
-transp_rem = "n"
-#transp_rem = input("Would you like to run transparency mask removal script (flatten the image)? (It can be useful in some situations, but use it only if you know what you're doing. It's input is ./decensor_output and it will output into ./decensor_remasked) [y/N] ") or "n"
 
 #Default options
 GBlur = 3
-CannyTr1 = 1
-CannyTr2 = 35
-LowRange = 5
+CannyTr1 = 30
+CannyTr2 = 20
+LowRange = 4
 HighRange = 20
-DetectionTr = 0.3
-
-convert = input('Would you like to convert input images (to flatten alpha channel, or to recreate alpha mask)? (Be advise, in cases with transparency it can prevent some errors and make output images better, but numerous use on some specific images can decrease quality. My advice: use only once) [y/N] ') or "n"
+DetectionTr = 0.32
+rgbvals = 255, 255, 255
 
 files = glob.glob(rootdir + '/**/*.png', recursive=True)
 err_files=[]
 
-if (convert == "y") or (convert == "Y"):
-	realpha = input("Would you like to also recreate alpha mask? (best to use on images with mosaic above the transparency. The script will will replace pixels with values 240, 240, 240 +-5 to alpha. Press 'c' to change those values) [y/N/c] ") or "n"
-	trhold = 5
-	rgbvals = 255, 255, 255, 0
-	if (realpha == "y") or (realpha == "Y"):
-		rgbvals = 240, 240, 240, 255
-	if (realpha == "c") or (realpha == "C"):
-		rgbvals = eval(input('Write your BG color that will be re-masked (write with commas): [240, 240, 240, 255] ') or '240, 240, 240, 255')
-		trhold = int(input('Input your threshold value for the color detection: [5] ') or '5')
 
-Prews = int(input("How many previews would you like to see (Every closed preview will already save detected file): [0] ") or "0")
-
-def convertion (f):
-	global convert
-	global rgbvals
-	#Dirty hack for non-typical images and non-unicode names (I blame CV2 for this) and fix for DCP transparency
-	if (convert == "y") or (convert == "Y"):
-		img_C = Image.open(f).convert("RGBA")
-		x, y = img_C.size
-		card = Image.new("RGBA", (x, y), (rgbvals))
-		return (np.array(Image.alpha_composite(card, img_C)))
-	else:
-		pilI = Image.open(f).convert('RGB') 
-		cvI = np.array(pilI) 
-		cvI = cvI[:, :, ::-1].copy() 
-		return (cvI)
-	
 def change_set (message):
 	global GBlur
 	global CannyTr1
@@ -112,7 +80,11 @@ with open('example.csv', 'w', newline='', encoding='utf-8') as f_output:     #CS
 			while True:
 				print("Working on " + f)
 
-				img_rgb = convertion(f)
+				img_C = Image.open(f).convert("RGB")
+				x, y = img_C.size
+				card = np.array(Image.new("RGB", (x, y), (rgbvals)))
+				img_C = np.array(img_C) 
+				img_rgb = img_C[:, :, ::-1].copy() 
 
 				img_gray = cv2.cvtColor(img_rgb, cv2.COLOR_BGR2GRAY)
 				img_gray = cv2.Canny(img_gray,CannyTr1,CannyTr2)
@@ -134,18 +106,6 @@ with open('example.csv', 'w', newline='', encoding='utf-8') as f_output:     #CS
 	#					cv2.rectangle(img_rgb, pt, (pt[0] + w, pt[1] + h), (0,255,0), -1)     #You can change here the color of mask
 	#				cv2.imwrite('output_progress_'+str(i)+'.png', img_rgb)     #DEBUG
 
-				#Previews
-				if Prews > 0:
-					cv2.imshow('Preview! Press any key or close to save', img_rgb)
-	#				cv2.imshow('preview_gray', img_gray)     #DEBUG
-					cv2.waitKey(0)
-					cv2.destroyAllWindows()
-					if (change_set("Would you like to correct your settings? [y/N] ") == "y"):
-						patterns()
-						continue
-					Prews -= 1
-					
-
 				#print(req)
 				result, _ = cv2.groupRectangles(np.array(req).tolist(),1,0.01)
 				for idx,(x1,y1,x2,y2) in enumerate(result):
@@ -164,17 +124,6 @@ with open('example.csv', 'w', newline='', encoding='utf-8') as f_output:     #CS
 		except Exception as Exception:
 			err_files.append(os.path.basename(f) + ": " + str(Exception))
 			pass
-	
-#CV Transparency remover itself     #DEBUG_redundant
-if (transp_rem == "y") or (transp_rem == "Y"):	
-	input('Now run DCP and then press Enter to run Transparency Remove Script')
-	import transparency_remove
-#Recreate alpha mask
-if (convert == "y") or (convert == "Y"):
-	if (realpha == "y") or (realpha == "Y") or (realpha == "c") or (realpha == "C"):
-		AA = input('Would you like to apply "anti-aliasing" (it will take some time) [n]') or "n"
-		input('Now run DCP and then press Enter to recreate alpha mask on output images')
-		reapalpha.reapalpha(rgbvals, trhold, AA)
 
 #Error list	
 if err_files:
