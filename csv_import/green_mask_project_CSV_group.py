@@ -109,7 +109,7 @@ with open('example.csv', 'w', newline='', encoding='utf-8') as f_output:     #CS
 				#print(req)
 				result, _ = cv2.groupRectangles(np.array(req).tolist(),1,0.01)
 				for idx,(x1,y1,x2,y2) in enumerate(result):
-					cv2.rectangle(img_rgb,(x1,y1),(x2,y2),(0,255,0),-1)
+					cv2.rectangle(img_rgb,(x1,y1),(x2,y2),(0,255,0),1)
 					#rectNum=list(zip(*loc[::-1]))     #CSV
 					csv_output.writerow([os.path.basename(f), os.stat(f).st_size, '"{}"', len(result), idx, '"{""name"":""rect""','""x"":' + str(x1), '""y"":' + str(y1), '""width"":' + str(x2-x1), '""height"":' + str(y2-y1) + '}"', '"{}"'])     #CSV
 					#print(result)
