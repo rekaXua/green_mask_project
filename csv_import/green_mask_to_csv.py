@@ -10,6 +10,7 @@ from PIL import Image
 
 #You can change those folder paths
 rootdir = "./decensor_input"
+outdir = "./decensor_input_original"
 os.makedirs(rootdir, exist_ok=True)
 
 rgbvals = 255, 255, 255
@@ -33,9 +34,13 @@ with open('example.csv', 'w', newline='', encoding='utf-8') as f_output:     #CS
 				
 			mask = np.array([0,255,0], dtype = "uint16")
 			card = cv2.inRange(img_rgb, mask, mask)
+			cv2.imshow('Preview! Press any key or close to save', card)
+			cv2.waitKey(0)
+			cv2.destroyAllWindows()
 
 			conturs, _ = cv2.findContours(card,cv2.RETR_LIST,cv2.CHAIN_APPROX_SIMPLE)    #cv2.CHAIN_APPROX_SIMPLE, cv2.CHAIN_APPROX_TC89_L1, cv2.CHAIN_APPROX_TC89_KCOS
 			#print(conturs)
+			f=f.replace(rootdir, outdir, 1)
 			for idx,conturJ in enumerate(conturs):
 				outputX = []
 				outputY = []
