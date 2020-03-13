@@ -75,7 +75,7 @@ patterns()
 
 #Working with files
 with open('example.csv', 'w', newline='', encoding='utf-8') as f_output:     #CSV
-	csv_output = csv.writer(f_output, quoting=csv.QUOTE_NONE, quotechar="", delimiter=",", escapechar='~')     #CSV
+	csv_output = csv.writer(f_output, quoting=csv.QUOTE_NONE, quotechar="", delimiter=",", escapechar=' ')     #CSV
 	csv_output.writerow(['filename','file_size','file_attributes','region_count','region_id','region_shape_attributes','region_attributes'])     #CSV
 	for f in files:
 		try:
@@ -87,15 +87,11 @@ with open('example.csv', 'w', newline='', encoding='utf-8') as f_output:     #CS
 				card = np.array(Image.new("RGB", (x, y), (rgbvals)))
 				img_C = np.array(img_C) 
 				img_rgb = img_C[:, :, ::-1].copy() 
-				
-				
-
 
 				img_gray = cv2.cvtColor(img_rgb, cv2.COLOR_BGR2GRAY)
 				img_gray = cv2.Canny(img_gray,CannyTr1,CannyTr2)
 				img_gray = 255-img_gray
 				img_gray = cv2.GaussianBlur(img_gray,(GBlur,GBlur),0)
-	#			cv2.imwrite('output_gray.png', img_gray)     #DEBUG
 
 				#Detection
 				for i in range(LowRange,HighRange+1):
@@ -106,28 +102,25 @@ with open('example.csv', 'w', newline='', encoding='utf-8') as f_output:     #CS
 					img_detection = cv2.matchTemplate(img_gray,template,cv2.TM_CCOEFF_NORMED)
 					loc = np.where(img_detection >= DetectionTr)
 					for pt in zip(*loc[::-1]):
-						cv2.rectangle(card, pt, (pt[0] + w, pt[1] + h), (0,255,0,255), -1)     #You can change here the color of mask
-	#				cv2.imwrite('output_progress_'+str(i)+'.png', img_rgb)     #DEBUG
+						cv2.rectangle(card, pt, (pt[0] + w, pt[1] + h), (0,255,0,255), -1)     #You can change here the color of the mask
 
 				card = cv2.cvtColor(card, cv2.COLOR_BGR2GRAY)
 				ret, card = cv2.threshold(card,254,255,cv2.THRESH_BINARY_INV)
-				conturs, _ = cv2.findContours(card,cv2.RETR_LIST,cv2.CHAIN_APPROX_SIMPLE)
+				conturs, _ = cv2.findContours(card,cv2.RETR_LIST,cv2.CHAIN_APPROX_SIMPLE)    #cv2.CHAIN_APPROX_SIMPLE, cv2.CHAIN_APPROX_TC89_L1, cv2.CHAIN_APPROX_TC89_KCOS
 				outputBoxes = []
-				for j in range(0,len(conturs)):
-					cv2.rectangle(img_rgb, cv2.boundingRect(conturs[j]), (0,255,0), 1)
-					outputBoxes.append(cv2.boundingRect(conturs[j]))
-				#print(outputBoxes)     #DEBUG
-				
-				for idx,(x1,y1,x2,y2) in enumerate(outputBoxes):
-					#cv2.rectangle(img_rgb,(x1,y1),(x2,y2),(255,255,255),-1)
-					#rectNum=list(zip(*loc[::-1]))     #CSV
-					csv_output.writerow([os.path.basename(f), os.stat(f).st_size, '"{}"', len(outputBoxes), idx, '"{""name"":""rect""','""x"":' + str(x1), '""y"":' + str(y1), '""width"":' + str(x2), '""height"":' + str(y2) + '}"', '"{}"'])     #CSV
-					#print(outputBoxes)
+				for idx,conturJ in enumerate(conturs):
+					outputX = []
+					outputY = []
+					for temp in conturJ:
+						outputX.append(temp[0][0])
+						outputY.append(temp[0][1])
+					cv2.rectangle(img_rgb, cv2.boundingRect(conturs[idx]), (0,255,0), 1)
+					outputBoxes.append(cv2.boundingRect(conturs[idx]))
+					csv_output.writerow([os.path.basename(f), os.stat(f).st_size, '"{}"', len(conturs), idx, '"{""name"":""polygon""','""all_points_x"":' + str(outputX), '""all_points_y"":' + str(outputY) + '}"', '"{}"'])     #CSV
 
 				#Previews
 				if Prews > 0:
 					cv2.imshow('Preview! Press any key or close to save', img_rgb)
-	#				cv2.imshow('preview_gray', img_gray)     #DEBUG
 					cv2.waitKey(0)
 					cv2.destroyAllWindows()
 					if (change_set("Would you like to correct your settings? [y/N] ") == "y"):

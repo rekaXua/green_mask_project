@@ -2,4 +2,3 @@
 numpy
 opencv-python
 Pillow
-csv
