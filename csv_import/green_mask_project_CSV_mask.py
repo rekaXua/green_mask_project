@@ -105,12 +105,13 @@ with open('example.csv', 'w', newline='', encoding='utf-8') as f_output:     #CS
 					for pt in zip(*loc[::-1]):
 						req.append([pt[0], pt[1], pt[0] + w, pt[1] + h])
 						#cv2.rectangle(card, pt, (pt[0] + w, pt[1] + h), (0,255,0,255), -1)     #You can change here the color of the mask
-				result, _ = cv2.groupRectangles(np.array(req).tolist(),1,0.01)
+				result, _ = cv2.groupRectangles(np.array(req).tolist(),0,0.01)
 				for x1,y1,x2,y2 in result:
 					cv2.rectangle(card,(x1,y1),(x2,y2),(0,255,0),-1)
 				card = cv2.cvtColor(card, cv2.COLOR_BGR2GRAY)
 				ret, card = cv2.threshold(card,254,255,cv2.THRESH_BINARY_INV)
 				conturs, _ = cv2.findContours(card,cv2.RETR_LIST,cv2.CHAIN_APPROX_SIMPLE)    #cv2.CHAIN_APPROX_SIMPLE, cv2.CHAIN_APPROX_TC89_L1, cv2.CHAIN_APPROX_TC89_KCOS
+				#print(len(conturs))    #DEBUG
 				outputBoxes = []
 				for idx,conturJ in enumerate(conturs):
 					outputX = []
