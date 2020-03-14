@@ -93,6 +93,7 @@ with open('example.csv', 'w', newline='', encoding='utf-8') as f_output:     #CS
 				img_gray = 255-img_gray
 				img_gray = cv2.GaussianBlur(img_gray,(GBlur,GBlur),0)
 
+				req=[]
 				#Detection
 				for i in range(LowRange,HighRange+1):
 					pattern_filename = pattdir+"/pattern"+str(i)+"x"+str(i)+".png"
@@ -102,8 +103,11 @@ with open('example.csv', 'w', newline='', encoding='utf-8') as f_output:     #CS
 					img_detection = cv2.matchTemplate(img_gray,template,cv2.TM_CCOEFF_NORMED)
 					loc = np.where(img_detection >= DetectionTr)
 					for pt in zip(*loc[::-1]):
-						cv2.rectangle(card, pt, (pt[0] + w, pt[1] + h), (0,255,0,255), -1)     #You can change here the color of the mask
-
+						req.append([pt[0], pt[1], pt[0] + w, pt[1] + h])
+						#cv2.rectangle(card, pt, (pt[0] + w, pt[1] + h), (0,255,0,255), -1)     #You can change here the color of the mask
+				result, _ = cv2.groupRectangles(np.array(req).tolist(),1,0.01)
+				for x1,y1,x2,y2 in result:
+					cv2.rectangle(card,(x1,y1),(x2,y2),(0,255,0),-1)
 				card = cv2.cvtColor(card, cv2.COLOR_BGR2GRAY)
 				ret, card = cv2.threshold(card,254,255,cv2.THRESH_BINARY_INV)
 				conturs, _ = cv2.findContours(card,cv2.RETR_LIST,cv2.CHAIN_APPROX_SIMPLE)    #cv2.CHAIN_APPROX_SIMPLE, cv2.CHAIN_APPROX_TC89_L1, cv2.CHAIN_APPROX_TC89_KCOS
