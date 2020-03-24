@@ -137,7 +137,7 @@ def draw_angled_rec(x0, y0, width, height, angle, img, color, img_x, img_y, mode
 		urs = [int(2 * x0 - bls[0]), int(2 * y0 - bls[1])]
 		brs = [int(2 * x0 - uls[0]), int(2 * y0 - uls[1])]
 		
-		angl_devider = random.triangular(0.33, 0.45) # ==/3.0~/2.0
+		angl_devider = random.triangular(0.35, 0.5) # ==/3.0~/2.0
 
 		if (mode, quantity) == ('horizontal_wing', 1):
 			bl = (int(bl[0] - height*math.sin(_angle)*angl_devider), bl[1])
