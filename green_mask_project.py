@@ -24,7 +24,7 @@ transp_rem = "n"
 GBlur = 3
 CannyTr1 = 1
 CannyTr2 = 35
-LowRange = 5
+LowRange = 3
 HighRange = 20
 DetectionTr = 0.3
 
@@ -74,8 +74,8 @@ def change_set (message):
 		GBlur = int(input('Enter the Gaussian Blur value: (small odd number) [' + str(GBlur) + '] ') or GBlur)
 		CannyTr1 = int(input('Enter the Canny Edge Detector Treshold 1 value: (1~200+, I also like it on 100) [' + str(CannyTr1) + '] ') or CannyTr1)
 		CannyTr2 = int(input('Enter the Canny Edge Detector Treshold 2 value: (1~200+) [' + str(CannyTr2) + '] ') or CannyTr2)
-		LowRange = int(input('Enter the Minimal Resolution Of Patterns: (3-Maximal Resolution) [' + str(LowRange) + '] ') or LowRange)
-		HighRange = int(input('Enter the Maximal Resolution Of Patterns: (Minimal Resolution-20+, depends on resolution of image)[' + str(HighRange) + '] ') or HighRange)
+		LowRange = int(input('Enter the Minimal Resolution of Patterns: (2-Maximal Resolution) [' + str(LowRange) + '] ') or LowRange)
+		HighRange = int(input('Enter the Maximal Resolution of Patterns: (Minimal Resolution-20+, depends on resolution of image)[' + str(HighRange) + '] ') or HighRange)
 		DetectionTr = float(input('Enter the Detection Treshold value: (0.00-1.00) [' + str(DetectionTr) + '] ') or DetectionTr)
 		return "y"
 
@@ -84,7 +84,7 @@ def patterns ():
 	global LowRange
 	global HighRange
 	
-	for masksize in range(LowRange, HighRange+1):
+	for masksize in range(HighRange+2, LowRange+1, -1):
 		maskimg = 2+masksize+masksize-1+2
 		screen = (maskimg, maskimg)
 
@@ -98,7 +98,7 @@ def patterns ():
 					pix[i, k] = (0,0,0)
 					pix[k, j] = (0,0,0)
 
-		img.save(pattdir+"/pattern"+str(masksize)+"x"+str(masksize)+".png")
+		img.save(pattdir+"/pattern"+str(masksize-2)+"x"+str(masksize-2)+".png")
 
 change_set("Would you like to change default settings? [y/N] ")
 patterns()
@@ -118,16 +118,19 @@ for f in files:
 #			cv2.imwrite('output_gray.png', img_gray)     #DEBUG
 
 			#Detection
-			for i in range(LowRange,HighRange+1):
-				pattern_filename = pattdir+"/pattern"+str(i)+"x"+str(i)+".png"
+			for i in range(HighRange+2, LowRange+1, -1):
+				pattern_filename = pattdir+"/pattern"+str(i-2)+"x"+str(i-2)+".png"
 				template = cv2.imread(pattern_filename, 0)
 				w, h = template.shape[::-1]
 			
 				img_detection = cv2.matchTemplate(img_gray,template,cv2.TM_CCOEFF_NORMED)
 				loc = np.where(img_detection >= DetectionTr)
+				rang = 0
 				for pt in zip(*loc[::-1]):
+					rang += 1
 #					cv2.rectangle(img_rgb, pt, (pt[0] + w, pt[1] + h), (0,255,0), 1)     #DEBUG
 					cv2.rectangle(img_rgb, pt, (pt[0] + w, pt[1] + h), (0,255,0), -1)     #You can change here the color of mask
+#				print(str(i-1)+'x'+str(i-1)+' - range - '+str(rang)+' times')    #For NeuralNetworks to determine resolution of mosaic
 #				cv2.imwrite('output_progress_'+str(i)+'.png', img_rgb)     #DEBUG
 
 			#Previews
