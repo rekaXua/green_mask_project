@@ -7,9 +7,7 @@ from PIL import Image
 
 #You can change those folder paths
 rootdir = "./decensor_input_original"
-pattdir = "./patterns"
 os.makedirs(rootdir, exist_ok=True)
-os.makedirs(pattdir, exist_ok=True)
 
 files = glob.glob(rootdir + '/**/*.png', recursive=True)
 files_jpg = glob.glob(rootdir + '/**/*.jpg', recursive=True)
