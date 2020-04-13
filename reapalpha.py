@@ -78,4 +78,4 @@ if __name__ == "__main__":
 	if (realpha == "y") or (realpha == "Y"):
 		rgbvals = eval(input('Write your BG color that will be re-masked (write with commas): [240, 240, 240] ') or '240, 240, 240')
 		trhold = int(input('Write your threshold value: [5] ') or '5')
-	reapalpha(rgbvals, trhold)
+	reapalpha(rgbvals, trhold, AA)
